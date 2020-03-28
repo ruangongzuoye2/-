@@ -22,8 +22,8 @@ public class getQuestion {
 			t%=4;
 			if(t==0)	return '+';
 			else if(t==1)	return '-';
-			else if(t==2)	return '×';
-			else	return '÷';
+			else if(t==2)	return '÷';
+			else	return '×';
 		}else {
 			if(t%2==0)	return 1;
 			else	return 0;
@@ -42,11 +42,10 @@ public class getQuestion {
 		int N1,N2,N3,N4;	//四个数的公因数
 		int nature=100,fen=12,fenmu=13;	//自然数，真分数分子，真分数分母的限制条件
 		int answerZi=0,answerMu=0,answerGong=1,temp;	//分步得到的答案的分子分母,temp是标记前后添加的,answerGong是用来化简答案的
-		
+		int Zi=0,Mu=0;	//保存形如a*b+c*d的运算数据
 		char [] Fuhao1 =new char[Qnumber]; 	//每个题目的三个运算符
 		char [] Fuhao2 =new char[Qnumber]; 
-		char [] Fuhao3 =new char[Qnumber]; 
-		
+		char [] Fuhao3 =new char[Qnumber]; 	
 		int [] n1 = new int[Qnumber];	//n1,n11,n111依次表示第一个数的整数,分子,分母
 		int [] n11 = new int[Qnumber];
 		int [] n111 = new int[Qnumber];
@@ -58,156 +57,236 @@ public class getQuestion {
 		int [] n333 = new int[Qnumber];
 		int [] n4 = new int[Qnumber];
 		int [] n44 = new int[Qnumber];
-		int [] n444 = new int[Qnumber];
-			
+		int [] n444 = new int[Qnumber];			
 		int [] AnswerZi = new int[Qnumber];	//存放最终答案的分子
 		int [] AnswerMu = new int[Qnumber];	//存放最终答案的分母
-		
-		int [] countCheng = new int[Qnumber];	//式子中乘号数量
-		int [] countChu = new int[Qnumber];
-		int [] countJia = new int[Qnumber];
-		int [] countJian = new int[Qnumber];
-		
-		for(c=0;c<Qnumber;c++) {			//初始化分子分母
+		for(c=0;c<Qnumber;c++) {			
 			n11[c]=0;n111[c]=1;		
 			n22[c]=0;n222[c]=1;
 			n33[c]=0;n333[c]=1;
-			n44[c]=0;n444[c]=1;
-			countCheng[c]=0;countChu[c]=0;countJia[c]=0;countJian[c]=0;
-		}		
+			n44[c]=0;n444[c]=1;}			//初始化分子分母
 		
 		StringBuilder s = new StringBuilder();
 		String [] str = new String[Qnumber];	//存放题目，后保存到文档
-		
+	
 		for(c=0;c<Qnumber;c++) {
+			
+			/*	
+			 * 算出四个随机数和三个随即运算符
+			 */
 			if(fuhao(0)==1) {									//算出随机数1
-				n1[c] =number(fen,0);n111[c] = number(fenmu,2);n11[c] = number(n111[c],1);
+				n1[c] =number(fen,0);n111[c] = number(fenmu,1);n11[c] = number(n111[c],0);
 				N1 = gong(n11[c],n111[c]);
 				n11[c]/=N1;n111[c]/=N1;			
 			}else	n1[c] = number(nature,0);
 			if(fuhao(0)==1) {									//算出随机数2
-				n2[c] =number(fen,0);n222[c] = number(fenmu,2);n22[c] = number(n222[c],1);
+				n2[c] =number(fen,0);n222[c] = number(fenmu,1);n22[c] = number(n222[c],0);
 				N2 = gong(n22[c],n222[c]);
 				n22[c]/=N2;n22[c]/=N2;
 			}else	n2[c] = number(nature,0);	
 			if(fuhao(0)==1) {									//算出随机数3
-				n3[c] =number(fen,0);n333[c] = number(fenmu,2);n33[c] = number(n333[c],1);
+				n3[c] =number(fen,0);n333[c] = number(fenmu,1);n33[c] = number(n333[c],0);
 				N3 = gong(n33[c],n333[c]);
 				n33[c]/=N3;n333[c]/=N3;
 			}else	n3[c] = number(nature,0);
 			if(fuhao(0)==1) {									//算出随机数4
-				n4[c] =number(fen,0);n444[c] = number(fenmu,2);n44[c] = number(n444[c],1);
+				n4[c] =number(fen,0);n444[c] = number(fenmu,1);n44[c] = number(n444[c],0);
 				N4 = gong(n44[c],n444[c]);
 				n44[c]/=N4;n444[c]/=N4;
-			}else	n4[c] = number(nature,0);
-		
-			Fuhao1[c] = fuhao(1);Fuhao2[c] = fuhao(1);Fuhao3[c] = fuhao(1);	//三个随机运算符
-		
-			if(Fuhao1[c]=='-'&((n1[c]+n11[c]/n111[c])<(n2[c]+n22[c]/n222[c])))	{i=n1[c];n1[c]=n2[c];n2[c]=i;i=n11[c];n11[c]=n22[c];n22[c]=i;i=n111[c];n111[c]=n222[c];n222[c]=i;}
-			switch(Fuhao1[c]) {
-			case '+':countJia[c]++;answerZi = n1[c]*n111[c]*n222[c]+n11[c]*n222[c]+n2[c]*n111[c]*n222[c]+n111[c]*n22[c];answerMu = n111[c]*n222[c];break;
-			case '-':countJian[c]++;answerZi = n1[c]*n111[c]*n222[c]+n11[c]*n222[c]-n2[c]*n111[c]*n222[c]-n111[c]*n22[c];answerMu = n111[c]*n222[c];break;
-			case '×':countCheng[c]++;answerZi = n1[c]*n111[c]*n2[c]*n222[c]+n1[c]*n111[c]*n22[c]+n11[c]*n2[c]*n222[c]+n11[c]*n22[c];answerMu = n111[c]*n222[c];break;
-			case '÷':countChu[c]++;if((n2[c]+n22[c]/n222[c])==1)	n222[c]*=number(nature,1);	answerZi = n1[c]*n111[c]*n222[c]+n11[c]*n222[c];answerMu = n2[c]*n111[c]*n222[c]+n22[c]*n111[c];break;
-			default:answerZi = 0;
-			}
-			if((n11[c]==0)|(n111[c]==1))	s.append(n1[c]);
-			else	s.append(n1[c]+"'"+n11[c]+"/"+n111[c]);	
-			s.append(" "+Fuhao1[c]+" ");
-			if((n22[c]==0)|(n222[c]==1))	s.append(n2[c]);
-			else	s.append(n2[c]+"'"+n22[c]+"/"+n222[c]);
-		
-			if(fuhao(0)==1) {	//随机生成1时执行此操作,往题目添加第三个数
-				if(fuhao(0)==1)	{	//随机生成1时添加括号
-					s.insert(0,'(');
-					s.append(')');			
+			}else	n4[c] = number(nature,0);		
+			
+			/*
+			 * 
+			 * 第一类式子,例如 (2*4-6)*3
+			 * 
+			 */
+			if(fuhao(0)==1) {
+				Fuhao1[c] = fuhao(1);Fuhao2[c] = fuhao(1);Fuhao3[c] = fuhao(1);
+				/*
+				 * 得到形如  a+b  的式子（第一步运算）
+				 */
+				if(Fuhao1[c]=='-'&((n1[c]+n11[c]/n111[c])<(n2[c]+n22[c]/n222[c])))	{i=n1[c];n1[c]=n2[c];n2[c]=i;i=n11[c];n11[c]=n22[c];n22[c]=i;i=n111[c];n111[c]=n222[c];n222[c]=i;}
+				switch(Fuhao1[c]) {
+				case '+':answerZi = n1[c]*n111[c]*n222[c]+n11[c]*n222[c]+n2[c]*n111[c]*n222[c]+n111[c]*n22[c];answerMu = n111[c]*n222[c];break;
+				case '-':answerZi = n1[c]*n111[c]*n222[c]+n11[c]*n222[c]-n2[c]*n111[c]*n222[c]-n111[c]*n22[c];answerMu = n111[c]*n222[c];break;
+				case '×':answerZi = n1[c]*n111[c]*n2[c]*n222[c]+n1[c]*n111[c]*n22[c]+n11[c]*n2[c]*n222[c]+n11[c]*n22[c];answerMu = n111[c]*n222[c];break;
+				case '÷':if((n2[c]+n22[c]/n222[c])==1)	n222[c]*=number(nature,1);	answerZi = n1[c]*n111[c]*n222[c]+n11[c]*n222[c];answerMu = n2[c]*n111[c]*n222[c]+n22[c]*n111[c];break;
+				default:answerZi = 0;
 				}
-				if((Fuhao2[c]=='-')&((answerZi/answerMu-(n3[c]+n33[c]/n333[c]))>0)) {
-					temp = 1;	//temp = 1时后面添加
-					s.append(" "+Fuhao2[c]+" ");
-					if((n33[c]==0)|(n333[c]==1))	s.append(n3[c]);
-					else	s.append(n3[c]+"'"+n33[c]+"/"+n333[c]);
-				}else if((Fuhao2[c]=='-')&((answerZi/answerMu-(n3[c]+n33[c]/n333[c]))<0)) {
-					temp = 0;	//temp = 0时前面添加
-					s.insert(0, " "+Fuhao2[c]+" ");
-					if((n33[c]==0)|(n333[c]==1))	s.insert(0, n3[c]);
-					else	s.insert(0,n3[c]+"'"+n33[c]+"/"+n333[c]);
-				}else if(fuhao(0)==1) {	//前面添加第三个数和第二个符号 
-					temp = 0;	//temp = 0时前面添加
-					s.insert(0, " "+Fuhao2[c]+" ");
-					if((n33[c]==0)|(n333[c]==1))	s.insert(0, n3[c]);
-					else	s.insert(0,n3[c]+"'"+n33[c]+"/"+n333[c]);
-				}else {				//后面添加第三个数和第二个符号
-					temp = 1;	//temp = 1时后面添加
-					s.append(" "+Fuhao2[c]+" ");
-					if((n33[c]==0)|(n333[c]==1))	s.append(n3[c]);
-					else	s.append(n3[c]+"'"+n33[c]+"/"+n333[c]);
-				}
-				if(temp == 1)	
-					switch(Fuhao2[c]) {			//answer*下一个数
-						case '+':countJia[c]++;answerZi = n333[c]*n3[c]*answerMu+n33[c]*answerMu+n333[c]*answerZi;answerMu = n333[c]*answerMu;break;
-						case '-':countJian[c]++;answerZi = n333[c]*answerZi-answerMu*n3[c]*n333[c]-n33[c]*answerMu;answerMu = n333[c]*answerMu;break;
-						case '×':countCheng[c]++;answerZi = n3[c]*n333[c]*answerZi+answerZi*n33[c];answerMu = n333[c]*answerMu;break;
-						case '÷':countChu[c]++;if((n3[c]+n33[c]/n333[c])==1)	n333[c]*=number(nature,1);	answerZi = answerZi*n333[c];answerMu = n3[c]*n333[c]*answerMu+answerMu*n33[c];break;
-				}else	
-					switch(Fuhao2[c]) {			//下一个数*answer
-						case '+':countJia[c]++;answerZi = n333[c]*n3[c]*answerMu+n33[c]*answerMu+n333[c]*answerZi;answerMu = n333[c]*answerMu;break;
-						case '-':countJian[c]++;answerZi = n33[c]*answerMu-n333[c]*answerZi+answerMu*n3[c]*n333[c];answerMu = n333[c]*answerMu;break;
-						case '×':countCheng[c]++;answerZi = n3[c]*n333[c]*answerZi+answerZi*n33[c];answerMu = n333[c]*answerMu;break;
-						case '÷':countChu[c]++;answerZi = n3[c]*n333[c]*answerMu+n33[c]*answerMu;answerMu = n333[c]*answerZi;break;
+				if((n11[c]==0))	s.append(n1[c]);
+				else if(n111[c]==1)	s.append(n1[c]+n11[c]);
+				else	s.append(n1[c]+"'"+n11[c]+"/"+n111[c]);	
+				s.append(" "+Fuhao1[c]+" ");
+				if((n22[c]==0))	s.append(n2[c]);
+				else if(n222[c]==1)	s.append(n2[c]+n22[c]);
+				else	s.append(n2[c]+"'"+n22[c]+"/"+n222[c]);
+			
+				/*
+				 * 得到形如  a+b+c  的式子（第二步运算）
+				 */
+				if(fuhao(0)==1) {	//随机生成1时执行此操作,往题目添加第三个数
+					if((Fuhao2[c]=='-')&((answerZi/answerMu-(n3[c]+n33[c]/n333[c]))>0)) {
+						temp = 1;	//temp = 1时后面添加
+						if(fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao2[c]+" ");
+						else s.append(" "+Fuhao2[c]+" ");
+						if((n33[c]==0))	s.append(n3[c]);
+						else if(n333[c]==1)	s.append(n3[c]+n33[c]);
+						else	s.append(n3[c]+"'"+n33[c]+"/"+n333[c]);
+					}else if((Fuhao2[c]=='-')&((answerZi/answerMu-(n3[c]+n33[c]/n333[c]))<0)) {
+						temp = 0;	//temp = 0时前面添加
+						if((Fuhao1[c]=='+')|(Fuhao1[c]=='-'))	s.insert(0, " "+Fuhao2[c]+" (").append(')');
+						else if(fuhao(0)==1)	s.insert(0, " "+Fuhao2[c]+" (").append(')');
+						else s.insert(0, " "+Fuhao2[c]+" ");
+						if((n33[c]==0))	s.insert(0, n3[c]);
+						else if(n333[c]==1)	s.append(n3[c]+n33[c]);
+						else	s.insert(0,n3[c]+"'"+n33[c]+"/"+n333[c]);
+					}else if(fuhao(0)==1) {	//前面添加第三个数和第二个符号 
+						temp = 0;	//temp = 0时前面添加
+						if((Fuhao1[c]=='+')|(Fuhao1[c]=='-')|(Fuhao2[c]=='×')|(Fuhao2[c]=='÷'))	s.insert(0, " "+Fuhao2[c]+" (").append(')');
+						else if(fuhao(0)==1)	s.insert(0, " "+Fuhao2[c]+" (").append(')');
+						else s.insert(0, " "+Fuhao2[c]+" ");
+						if((n33[c]==0))	s.insert(0, n3[c]); 
+						else if(n333[c]==1)	s.append(n3[c]+n33[c]);
+						else	s.insert(0,n3[c]+"'"+n33[c]+"/"+n333[c]);
+					}else {				//后面添加第三个数和第二个符号
+						temp = 1;	//temp = 1时后面添加
+						if(((Fuhao1[c]=='+')|(Fuhao1[c]=='-'))&((Fuhao2[c]=='×')|(Fuhao2[c]=='÷')))	s.insert(0, "(").append(") "+Fuhao2[c]+" ");
+						else if(fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao2[c]+" ");
+						else s.append(" "+Fuhao2[c]+" ");
+						if((n33[c]==0))	s.append(n3[c]);
+						else if(n333[c]==1)	s.append(n3[c]+n33[c]);
+						else	s.append(n3[c]+"'"+n33[c]+"/"+n333[c]);
+					}
+					if(temp == 1)	
+						switch(Fuhao2[c]) {			//answer*下一个数
+							case '+':answerZi = n333[c]*n3[c]*answerMu+n33[c]*answerMu+n333[c]*answerZi;answerMu = n333[c]*answerMu;break;
+							case '-':answerZi = n333[c]*answerZi-answerMu*n3[c]*n333[c]-n33[c]*answerMu;answerMu = n333[c]*answerMu;break;
+							case '×':answerZi = n3[c]*n333[c]*answerZi+answerZi*n33[c];answerMu = n333[c]*answerMu;break;
+							case '÷':if((n3[c]+n33[c]/n333[c])==1)	n333[c]*=number(nature,1);	answerZi = answerZi*n333[c];answerMu = n3[c]*n333[c]*answerMu+answerMu*n33[c];break;
+					}else	
+						switch(Fuhao2[c]) {			//下一个数*answer
+							case '+':answerZi = n333[c]*n3[c]*answerMu+n33[c]*answerMu+n333[c]*answerZi;answerMu = n333[c]*answerMu;break;
+							case '-':answerZi = n33[c]*answerMu-n333[c]*answerZi+answerMu*n3[c]*n333[c];answerMu = n333[c]*answerMu;break;
+							case '×':answerZi = n3[c]*n333[c]*answerZi+answerZi*n33[c];answerMu = n333[c]*answerMu;break;
+							case '÷':answerZi = n3[c]*n333[c]*answerMu+n33[c]*answerMu;answerMu = n333[c]*answerZi;break;
 					}				
-			}	
-			if(fuhao(0)==1) {	//随机生成1时执行此操作,往题目添加第四个数
-				if(fuhao(0)==1)	{	//随机生成1时添加括号
-					s.insert(0,'(');
-					s.append(')');			
-				}
-				if((Fuhao3[c]=='-')&((answerZi/answerMu-(n4[c]+n44[c]/n444[c]))>0)) {
-					temp = 1;	//temp = 1时后面添加
-					s.append(" "+Fuhao3[c]+" ");
-					if((n44[c]==0)|(n444[c]==1))	s.append(n4[c]);
-					else	s.append(n4[c]+"'"+n44[c]+"/"+n444[c]);
-				}else if((Fuhao3[c]=='-')&((answerZi/answerMu-(n4[c]+n44[c]/n444[c]))<0)) {
-					temp = 0;	//temp = 0时前面添加
-					s.insert(0, " "+Fuhao3[c]+" ");
-					if((n44[c]==0)|(n444[c]==1))	s.insert(0, n4[c]);
-					else	s.insert(0,n4[c]+"'"+n44[c]+"/"+n444[c]);
-				}else if(fuhao(0)==1) {	//前面添加第4个数和第2个符号 
-					temp = 0;	//temp = 0时前面添加
-					s.insert(0, " "+Fuhao3[c]+" ");
-					if((n44[c]==0)|(n444[c]==1))	s.insert(0, n4[c]);
-					else	s.insert(0,n4[c]+"'"+n44[c]+"/"+n444[c]);
-				}else {				//后面添加第4个数和第2个符号
-					temp = 1;	//temp = 1时后面添加
-					s.append(" "+Fuhao3[c]+" ");
-					if((n44[c]==0)|(n444[c]==1))	s.append(n4[c]);
-					else	s.append(n4[c]+"'"+n44[c]+"/"+n444[c]);
-				}
-				if(temp == 1)	
-					switch(Fuhao3[c]) {				//answer*下一个数
-						case '+':countJia[c]++;answerZi = n444[c]*n4[c]*answerMu+n44[c]*answerMu+n444[c]*answerZi;answerMu = n444[c]*answerMu;break;
-						case '-':countJian[c]++;answerZi = n444[c]*answerZi-answerMu*n4[c]*n444[c]-n44[c]*answerMu;answerMu = n444[c]*answerMu;break;
-						case '×':countCheng[c]++;answerZi = n4[c]*n444[c]*answerZi+answerZi*n44[c];answerMu = n444[c]*answerMu;break;
-						case '÷':countChu[c]++;if((n4[c]+n44[c]/n444[c])==1)	n444[c]*=number(nature,1);	answerZi = answerZi*n444[c];answerMu = n4[c]*n444[c]*answerMu+answerMu*n44[c];break;
+				}	
+			
+				/*
+				 * 得到形如  a+b+c+d 的式子（第三步运算）
+				 */
+				if(fuhao(0)==1) {	//随机生成1时执行此操作,往题目添加第四个数
+					if((Fuhao3[c]=='-')&((answerZi/answerMu-(n4[c]+n44[c]/n444[c]))>0)) {
+						temp = 1;	//temp = 1时后面添加
+						if(fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao3[c]+" ");
+						else s.append(" "+Fuhao3[c]+" ");
+						if((n44[c]==0))	s.append(n4[c]);
+						else if(n444[c]==1)	s.append(n4[c]+n44[c]);
+						else	s.append(n4[c]+"'"+n44[c]+"/"+n444[c]);
+					}else if((Fuhao3[c]=='-')&((answerZi/answerMu-(n4[c]+n44[c]/n444[c]))<0)) {
+						temp = 0;	//temp = 0时前面添加
+						if((Fuhao2[c]=='+')|(Fuhao2[c]=='-'))	s.insert(0, " "+Fuhao3[c]+" (").append(')');
+						else if(fuhao(0)==1)	s.insert(0, " "+Fuhao3[c]+" (").append(')');
+						else s.insert(0, " "+Fuhao3[c]+" ");
+						if((n44[c]==0))	s.insert(0, n4[c]);
+						else if(n444[c]==1)	s.append(n4[c]+n44[c]);
+						else	s.insert(0,n4[c]+"'"+n44[c]+"/"+n444[c]);
+					}else if(fuhao(0)==1) {	//前面添加第三个数和第二个符号 
+						temp = 0;	//temp = 0时前面添加
+						if((Fuhao2[c]=='+')|(Fuhao2[c]=='-')|(Fuhao3[c]=='×')|(Fuhao3[c]=='÷'))	s.insert(0, " "+Fuhao3[c]+" (").append(')');
+						else if(fuhao(0)==1)	s.insert(0, " "+Fuhao3[c]+" (").append(')');
+						else s.insert(0, " "+Fuhao3[c]+" ");
+						if((n44[c]==0))	s.insert(0, n4[c]); 
+						else if(n444[c]==1)	s.append(n4[c]+n44[c]);
+						else	s.insert(0,n4[c]+"'"+n44[c]+"/"+n444[c]);
+					}else {				//后面添加第三个数和第二个符号
+						temp = 1;	//temp = 1时后面添加
+						if(((Fuhao2[c]=='+')|(Fuhao2[c]=='-'))&((Fuhao3[c]=='×')|(Fuhao3[c]=='÷')))	s.insert(0, "(").append(") "+Fuhao3[c]+" ");
+						else if(fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao3[c]+" ");
+						else s.append(" "+Fuhao3[c]+" ");
+						if((n44[c]==0))	s.append(n4[c]);
+						else if(n444[c]==1)	s.append(n4[c]+n44[c]);
+						else	s.append(n4[c]+"'"+n44[c]+"/"+n444[c]);
+					}
+					if(temp == 1)	
+						switch(Fuhao3[c]) {				//answer*下一个数
+							case '+':answerZi = n444[c]*n4[c]*answerMu+n44[c]*answerMu+n444[c]*answerZi;answerMu = n444[c]*answerMu;break;
+							case '-':answerZi = n444[c]*answerZi-answerMu*n4[c]*n444[c]-n44[c]*answerMu;answerMu = n444[c]*answerMu;break;
+							case '×':answerZi = n4[c]*n444[c]*answerZi+answerZi*n44[c];answerMu = n444[c]*answerMu;break;
+							case '÷':if((n4[c]+n44[c]/n444[c])==1)	n444[c]*=number(nature,1);	answerZi = answerZi*n444[c];answerMu = n4[c]*n444[c]*answerMu+answerMu*n44[c];break;
 					}else	
 						switch(Fuhao3[c]) {			//下一个数*answer
-						case '+':countJia[c]++;answerZi = n444[c]*n4[c]*answerMu+n44[c]*answerMu+n444[c]*answerZi;answerMu = n444[c]*answerMu;break;
-						case '-':countJian[c]++;answerZi = n44[c]*answerMu-n444[c]*answerZi+answerMu*n4[c]*n444[c];answerMu = n444[c]*answerMu;break;
-						case '×':countCheng[c]++;answerZi = n4[c]*n444[c]*answerZi+answerZi*n44[c];answerMu = n444[c]*answerMu;break;
-						case '÷':countChu[c]++;answerZi = n4[c]*n444[c]*answerMu+n44[c]*answerMu;answerMu = n444[c]*answerZi;break;
+							case '+':answerZi = n444[c]*n4[c]*answerMu+n44[c]*answerMu+n444[c]*answerZi;answerMu = n444[c]*answerMu;break;
+							case '-':answerZi = n44[c]*answerMu-n444[c]*answerZi+answerMu*n4[c]*n444[c];answerMu = n444[c]*answerMu;break;
+							case '×':answerZi = n4[c]*n444[c]*answerZi+answerZi*n44[c];answerMu = n444[c]*answerMu;break;
+							case '÷':answerZi = n4[c]*n444[c]*answerMu+n44[c]*answerMu;answerMu = n444[c]*answerZi;break;
 						}
-			}
-			answerGong = gong(answerZi,answerMu);
-			answerZi/=answerGong;answerMu/=answerGong;	//化简答案
-			s.append(" "+'=');
+				}
+				answerGong = gong(answerZi,answerMu);
+				answerZi/=answerGong;answerMu/=answerGong;	//化简答案
+				s.append(" "+'=');
 			
-			for(d=0;d<c;d++) {	//判断运算是否重复,重复则重新生成题目
-				if((n1[c]==n1[d])&(n11[c]==n11[d])&(n111[c]==n111[d])&(n2[c]==n2[d])&(n22[c]==n22[d])&(n222[c]==n222[d])&(n3[c]==n3[d])&(n33[c]==n33[d])&(n333[c]==n333[d])&(n4[c]==n4[d])&(n44[c]==n44[d])&(n444[c]==n444[d])&(countJia[c]==countJia[d])&(countJian[c]==countJian[d])&(countCheng[c]==countCheng[d])&(countChu[c]==countChu[d]))	{c--;continue;}
-				else if((n1[c]==n2[d])&(n11[c]==n22[d])&(n111[c]==n222[d])&(n2[c]==n1[d])&(n22[c]==n11[d])&(n222[c]==n111[d])&(n3[c]==n3[d])&(n33[c]==n33[d])&(n333[c]==n333[d])&(n4[c]==n4[d])&(n44[c]==n44[d])&(n444[c]==n444[d])&(countJia[c]==countJia[d])&(countJian[c]==countJian[d])&(countCheng[c]==countCheng[d])&(countChu[c]==countChu[d]))	{c--;continue;}
+				/*
+				 * 判断运算是否重复,重复则重新生成题目
+				 */
+				for(d=0;d<c;d++) {	
+					if((Fuhao1[c]==Fuhao1[d])&(Fuhao2[c]==Fuhao2[d])&(Fuhao3[c]==Fuhao3[d])&((n3[c]*n333[c]+n33[c])*n333[c]==(n3[d]*n333[d]+n33[d])*n333[d])&((n4[c]*n444[c]+n44[c])*n444[c]==(n4[d]*n444[d]+n44[d])*n444[d]))
+						if(((n1[c]*n111[c]+n11[c])*n111[c]==(n1[d]*n111[d]+n11[d])*n111[d])&((n2[c]*n222[c]+n22[c])*n222[c]==(n2[d]*n222[d]+n22[d])*n222[d]))	{c--;continue;}
+						else if((Fuhao1[c]=='+'|Fuhao1[c]=='×')&((n1[c]*n111[c]+n11[c])*n111[c]==(n2[d]*n222[d]+n22[d])*n222[d])&((n2[c]*n222[c]+n22[c])*n222[c]==(n1[d]*n111[d]+n11[d])*n111[d]))	{c--;continue;}
+				}
+			
+				str[c] = s.toString();
+				AnswerZi[c] = answerZi;AnswerMu[c] = answerMu;
+				s.delete(0,s.length());	//清空s	
 			}
-			str[c] = s.toString();
-			AnswerZi[c] = answerZi;AnswerMu[c] = answerMu;
-			s.delete(0,s.length());	//清空s			
+			
+			/*
+			 * 
+			 * 第二类式子，例如 4*5+6*8
+			 * 
+			 */
+			else {
+				if(fuhao(0)==1)	Fuhao1[c] = '+';else	Fuhao1[c] = '-';
+				if(fuhao(0)==1)	Fuhao2[c] = '×';else	Fuhao2[c] = '÷';
+				if(fuhao(0)==1)	Fuhao3[c] = '×';else	Fuhao3[c] = '÷';
+				switch(Fuhao2[c]) {
+				case '×':answerZi = n1[c]*n111[c]*n2[c]*n222[c]+n1[c]*n111[c]*n22[c]+n11[c]*n2[c]*n222[c]+n11[c]*n22[c];answerMu = n111[c]*n222[c];break;
+				case '÷':if((n2[c]+n22[c]/n222[c])==1)	n222[c]*=number(nature,1);	answerZi = n1[c]*n111[c]*n222[c]+n11[c]*n222[c];answerMu = n2[c]*n111[c]*n222[c]+n22[c]*n111[c];break;
+				}
+				switch(Fuhao3[c]) {
+				case '×':Zi = n3[c]*n333[c]*n4[c]*n444[c]+n3[c]*n333[c]*n44[c]+n33[c]*n4[c]*n444[c]+n33[c]*n44[c];Mu = n333[c]*n444[c];break;
+				case '÷':if((n4[c]+n44[c]/n444[c])==1)	n444[c]*=number(nature,1);	Zi = n3[c]*n333[c]*n444[c]+n33[c]*n444[c];Mu = n4[c]*n333[c]*n444[c]+n44[c]*n333[c];break;
+				}
+				if(Fuhao1[c]=='+')	{answerZi = answerZi*Mu+answerMu*Zi;answerMu = answerMu*Mu;}
+				else	{answerZi = answerZi*Mu-answerMu*Zi;answerMu = answerMu*Mu;}
+				answerGong = gong(answerZi,answerMu);
+				
+				if((n11[c]==0))	s.append(n1[c]+" "+Fuhao2[c]+" ");
+				else if(n111[c]==1)	s.append(n1[c]+n11[c]+" "+Fuhao2[c]+" ");
+				else	s.append(n1[c]+"'"+n11[c]+"/"+n111[c]+" "+Fuhao2[c]+" ");
+				if((n22[c]==0))	s.append(n2[c]+" "+Fuhao1[c]+" ");
+				else if(n222[c]==1)	s.append(n2[c]+n22[c]+" "+Fuhao1[c]+" ");
+				else	s.append(n2[c]+"'"+n22[c]+"/"+n222[c]+" "+Fuhao1[c]+" ");
+				if((n33[c]==0))	s.append(n3[c]+" "+Fuhao3[c]+" ");
+				else if(n333[c]==1)	s.append(n3[c]+n33[c]+" "+Fuhao3[c]+" ");
+				else	s.append(n3[c]+"'"+n33[c]+"/"+n333[c]+" "+Fuhao3[c]+" ");
+				if((n44[c]==0))	s.append(n4[c]+" = ");
+				else if(n444[c]==1)	s.append(n4[c]+n44[c]+" = ");
+				else	s.append(n4[c]+"'"+n44[c]+"/"+n444[c]+" = ");
+
+				/*
+				 * 判断运算是否重复,重复则重新生成题目
+				 */
+				for(d=0;d<c;d++) 
+					if(((Fuhao1[c]==Fuhao1[d])&(Fuhao2[c]==Fuhao2[d])&(Fuhao3[c]==Fuhao3[d]))|((Fuhao1[c]==Fuhao1[d])&(Fuhao2[c]==Fuhao3[d])&(Fuhao3[c]==Fuhao2[d]))) {
+						if(((n1[c]*n111[c]+n11[c])*n111[c]==(n1[d]*n111[d]+n11[d])*n111[d])&((n2[c]*n222[c]+n22[c])*n222[c]==(n2[d]*n222[d]+n22[d])*n222[d])|((n1[c]*n111[c]+n11[c])*n111[c]==(n2[d]*n222[d]+n22[d])*n222[d])&((n2[c]*n222[c]+n22[c])*n222[c]==(n1[d]*n111[d]+n11[d])*n111[d]))
+							if(((n3[c]*n333[c]+n33[c])*n333[c]==(n3[d]*n333[d]+n33[d])*n333[d])&((n4[c]*n444[c]+n44[c])*n444[c]==(n4[d]*n444[d]+n44[d])*n444[d])|((n3[c]*n333[c]+n33[c])*n333[c]==(n4[d]*n444[d]+n44[d])*n444[d])&((n4[c]*n444[c]+n44[c])*n444[c]==(n3[d]*n333[d]+n33[d])*n333[d]))
+							{c--;continue;}
+				}
+				str[c] = s.toString();
+				AnswerZi[c] = answerZi/gong(answerZi,answerMu);AnswerMu[c] = answerMu/gong(answerZi,answerMu);
+				s.delete(0,s.length());	//清空s	
+			}
 		}
 		for(c=0;c<Qnumber;c++) {
 			System.out.print(str[c]+" "+AnswerZi[c]+"/"+AnswerMu[c]+"\n");
