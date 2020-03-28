@@ -24,7 +24,7 @@ public class getAnswer {
 		
 		BufferedReader R1 = null,R2 = null;
 		StringBuffer sb = new StringBuffer();
-		String [] Answer = new String[Qnumber];	//正确答案
+		//String [] Answer = new String[Qnumber];	//正确答案
 		String [] answer = new String[Qnumber];	//使用者的回答
 		int [] a = new int[Qnumber];
 		try {
