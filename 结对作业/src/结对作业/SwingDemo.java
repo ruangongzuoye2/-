@@ -1,4 +1,4 @@
-package 结对项目
+package 结对作业;
 import javax.swing.JFrame;
 
 public class SwingDemo {

@@ -1,4 +1,4 @@
-package 结对项目
+package 结对作业;
 
 //myFrame基于JFrame的个人工具类
 import java.awt.Container;
@@ -17,8 +17,9 @@ import javax.swing.JTextField;
 
 
 public class myFrame extends JFrame{
-	private JFileChooser fileChooser = new JFileChooser();
+	private JFileChooser fileChooser = new JFileChooser("E:\\eclipse-workspace\\结对作业\\src\\结对作业");
 	String selectedFile;
+
 	JLabel label = new JLabel("生成题目数"); 
 	JLabel label2 = new JLabel("结果最大值"); 
 	
@@ -58,7 +59,7 @@ public class myFrame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 
 			int i = fileChooser.showOpenDialog(getContentPane());// 显示文件选择对话框
-
+			
 			if (i == JFileChooser.APPROVE_OPTION) {
 
 			selectedFile = fileChooser.getSelectedFile().getAbsolutePath();// 获得选中的文件对象
