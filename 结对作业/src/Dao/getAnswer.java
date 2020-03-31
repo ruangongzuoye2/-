@@ -12,13 +12,14 @@ import unity.information;
 public class getAnswer {
 	public boolean  getAnswer(information info){
 		Scanner sc = new Scanner(System.in);
-		int Qnumber = 30,i = 0,j = 0,k = 0;
+		int i = 0,j = 0,k = 0;
+		int Qnumber;
 		StringBuilder wrong = new StringBuilder();	//错题记录写入txt
-		StringBuilder correct = new StringBuilder();		//对题记录写入txt
-		int W = 0,C = 0;										//错题数，对题数								
+		StringBuilder correct = new StringBuilder();//对题记录写入txt
+		int W = 0,C = 0;						    //错题数，对题数								
 		File fex = new File("E:\\eclipse-workspace\\结对作业\\src\\结对作业"+File.separator+"Exercises.txt");
 		File fan = new File("E:\\eclipse-workspace\\结对作业\\src\\结对作业"+File.separator+"Answers.txt");
-		File grade = new File("E:\\eclipse-workspace\\结对作业\\src\\结对作业"+File.separator+"Grade.txt");
+		//File grade = new File("E:\\eclipse-workspace\\结对作业\\src\\结对作业"+File.separator+"Grade.txt");
 		try {
 			if(!grade.exists())	
 				grade.createNewFile();
@@ -75,8 +76,8 @@ public class getAnswer {
 			writer.close();
 		}catch(IOException e) {
 			e.printStackTrace(); 
-		}		
-	}
+}		
+
 		
 		
 		return true;
