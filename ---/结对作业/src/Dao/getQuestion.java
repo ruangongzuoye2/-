@@ -76,9 +76,8 @@ public class getQuestion {
 			File fex = new File(information.getProblem());
 			File fan = new File(information.getAnswer());
 			int Qnumber = information.getNum_timu();
-			int i,c,d;	//Qnumber指生成题目数量,i,c,d是计数器
+			int i,c;	//Qnumber指生成题目数量,i,c,d是计数器
 			int N1,N2,N3,N4;	//四个数的公因数		
-			int same = 0;	//标志题目是否重复
 			int nature=5,fenmu=3;	//自然数，真分数分母的限制条件
 			int answerZi=0,answerMu=0,answerGong=1,temp;	//分步得到的答案的分子分母,temp是标记前后添加的,answerGong是用来化简答案的
 			int Zi=0,Mu=0;	//保存形如a*b+c*d的运算数据
@@ -116,22 +115,22 @@ public class getQuestion {
 				 * 算出四个随机数和三个随即运算符
 				 */
 				if(fuhao(0)==1) {									//算出随机数1
-					n1[c] =number(nature,0);n111[c] = number(fenmu,1);n11[c] = number(n111[c],0);
+					n1[c] =number(nature,-1);n111[c] = number(fenmu,1);n11[c] = number(n111[c],0);
 					N1 = gong(n11[c],n111[c]);
 					n11[c]/=N1;n111[c]/=N1;			
 				}else	n1[c] = number(nature,0);
 				if(fuhao(0)==1) {									//算出随机数2
-					n2[c] =number(nature,0);n222[c] = number(fenmu,1);n22[c] = number(n222[c],0);
+					n2[c] =number(nature,-1);n222[c] = number(fenmu,1);n22[c] = number(n222[c],0);
 					N2 = gong(n22[c],n222[c]);
 					n22[c]/=N2;n22[c]/=N2;
 				}else	n2[c] = number(nature,0);	
 				if(fuhao(0)==1) {									//算出随机数3
-					n3[c] =number(nature,0);n333[c] = number(fenmu,1);n33[c] = number(n333[c],0);
+					n3[c] =number(nature,-1);n333[c] = number(fenmu,1);n33[c] = number(n333[c],0);
 					N3 = gong(n33[c],n333[c]);
 					n33[c]/=N3;n333[c]/=N3;
 				}else	n3[c] = number(nature,0);
 				if(fuhao(0)==1) {									//算出随机数4
-					n4[c] =number(nature,0);n444[c] = number(fenmu,1);n44[c] = number(n444[c],0);
+					n4[c] =number(nature,-1);n444[c] = number(fenmu,1);n44[c] = number(n444[c],0);
 					N4 = gong(n44[c],n444[c]);
 					n44[c]/=N4;n444[c]/=N4;
 				}else	n4[c] = number(nature,0);		
