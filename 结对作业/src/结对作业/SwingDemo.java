@@ -1,12 +1,4 @@
-package learngui;
-
-//
-//java swing做一个简单的文本框
-//Created by lee_1310 on 2019.03.29 23:05
-//CopyRight @ https://blog.csdn.net/Lee_1310.
-//
-
-
+package 结对项目
 import javax.swing.JFrame;
 
 public class SwingDemo {
