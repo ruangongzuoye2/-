@@ -1,8 +1,6 @@
-package learngui;
+package 结对项目
 
 //myFrame基于JFrame的个人工具类
-
-
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
