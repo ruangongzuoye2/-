@@ -8,7 +8,6 @@ public class getAnswer {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		
 		int Qnumber = 30,i = 0,j = 0,k = 0;
 		StringBuilder wrong = new StringBuilder();	//错题记录写入txt
 		StringBuilder correct = new StringBuilder();		//对题记录写入txt
@@ -17,14 +16,14 @@ public class getAnswer {
 		File fan = new File("E:\\eclipse-workspace\\结对作业\\src\\结对作业"+File.separator+"Answers.txt");
 		File grade = new File("E:\\eclipse-workspace\\结对作业\\src\\结对作业"+File.separator+"Grade.txt");
 		try {
-			if(!grade.exists())		grade.createNewFile();
+			if(!grade.exists())	
+				grade.createNewFile();
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
 		
 		BufferedReader R1 = null,R2 = null;
 		StringBuffer sb = new StringBuffer();
-		//String [] Answer = new String[Qnumber];	//正确答案
 		String [] answer = new String[Qnumber];	//使用者的回答
 		int [] a = new int[Qnumber];
 		try {
