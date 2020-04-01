@@ -6,6 +6,4 @@ public class gongyinshu {
 		for(int i=1;i<=small;i++) {if((m%i==0)&(n%i==0)) gongyinshu = i;}
 		return gongyinshu;
 	}
-
-
 }
