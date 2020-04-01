@@ -12,8 +12,9 @@ import unity.information;
 public class getAnswer {
 	public boolean  getAnswer(){
 		Scanner sc = new Scanner(System.in);
+		get_hangshu gHangshu = new get_hangshu();
 		int i = 0,j = 0,k = 0;
-		int Qnumber = information.getNum_timu();
+		int Qnumber = gHangshu.hang(information.getProblem());
 		StringBuilder wrong = new StringBuilder();	//错题记录写入txt
 		StringBuilder correct = new StringBuilder();//对题记录写入txt
 		int W = 0,C = 0;						    //错题数，对题数								
