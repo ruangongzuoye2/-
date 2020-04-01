@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author strong
- *
- */
-package Draw;
