@@ -6,37 +6,13 @@ import java.io.IOException;
 import java.security.SecureRandom;
 
 import unity.information;
-
+import Dao.getopnum;
+import Dao.getfuhao;
+import Dao.gongyinshu;
 public class getQuestion {
 	
-		
-		public static int number(int limit,int min) {	//min < 返回的随机数  < limit
-			SecureRandom r = new SecureRandom();
-			int i=0;
-			while(i<=min) {
-				i = r.nextInt();
-				i = i%limit;
-				if(i<0)	i = -i;			
-			}
-			return i;
-		}
-		
-		
-		public static char fuhao(int n) {	//n=1时随机生成并返回 加/减/乘/除
-											//n=0时函数功能是判断是否生成括号，是否增加运算项等，返回0或1
-			SecureRandom r = new SecureRandom();	
-			int t = r.nextInt();
-			if(n==1) {
-				t%=4;
-				if(t==0)	return '+';
-				else if(t==1)	return '-';
-				else if(t==2)	return '÷';
-				else	return '×';
-			}else {
-				if(t%2==0)	return 1;
-				else	return 0;
-			}
-		}
+		getfuhao fh = new getfuhao();
+		getopnum opn =new getopnum();
 		public static int gong(int m,int n) {	//返回分子和分母的公因子,m是分子,n是分母
 			int gongyinshu = 1,small = m;
 			for(int i=1;i<=small;i++) {if((m%i==0)&(n%i==0)) gongyinshu = i;}
@@ -50,7 +26,7 @@ public class getQuestion {
 			int i,c,d;	//Qnumber指生成题目数量,i,c,d是计数器
 			int N1,N2,N3,N4;	//四个数的公因数		
 			int same = 0;	//标志题目是否重复
-			int nature=5,fenmu=3;	//自然数，真分数分母的限制条件
+			int nature = information.getNature(),fenmu = information.getFenmu_max();	//自然数，真分数分母的限制条件
 			int answerZi=0,answerMu=0,answerGong=1,temp;	//分步得到的答案的分子分母,temp是标记前后添加的,answerGong是用来化简答案的
 			int Zi=0,Mu=0;	//保存形如a*b+c*d的运算数据
 			char [] Fuhao1 =new char[Qnumber]; 	//每个题目的三个运算符
@@ -86,34 +62,34 @@ public class getQuestion {
 				/*	
 				 * 算出四个随机数和三个随即运算符
 				 */
-				if(fuhao(0)==1) {									//算出随机数1
-					n1[c] =number(nature,0);n111[c] = number(fenmu,1);n11[c] = number(n111[c],0);
+				if(fh.fuhao(0)==1) {									//算出随机数1
+					n1[c] =opn.number(nature,0);n111[c] = opn.number(fenmu,1);n11[c] = opn.number(n111[c],0);
 					N1 = gong(n11[c],n111[c]);
 					n11[c]/=N1;n111[c]/=N1;			
-				}else	n1[c] = number(nature,0);
-				if(fuhao(0)==1) {									//算出随机数2
-					n2[c] =number(nature,0);n222[c] = number(fenmu,1);n22[c] = number(n222[c],0);
+				}else	n1[c] = opn.number(nature,0);
+				if(fh.fuhao(0)==1) {									//算出随机数2
+					n2[c] = opn.number(nature,0);n222[c] = opn.number(fenmu,1);n22[c] = opn.number(n222[c],0);
 					N2 = gong(n22[c],n222[c]);
 					n22[c]/=N2;n22[c]/=N2;
-				}else	n2[c] = number(nature,0);	
-				if(fuhao(0)==1) {									//算出随机数3
-					n3[c] =number(nature,0);n333[c] = number(fenmu,1);n33[c] = number(n333[c],0);
+				}else	n2[c] = opn.number(nature,0);	
+				if(fh.fuhao(0)==1) {									//算出随机数3
+					n3[c] = opn.number(nature,0);n333[c] = opn.number(fenmu,1);n33[c] = opn.number(n333[c],0);
 					N3 = gong(n33[c],n333[c]);
 					n33[c]/=N3;n333[c]/=N3;
-				}else	n3[c] = number(nature,0);
-				if(fuhao(0)==1) {									//算出随机数4
-					n4[c] =number(nature,0);n444[c] = number(fenmu,1);n44[c] = number(n444[c],0);
+				}else	n3[c] = opn.number(nature,0);
+				if(fh.fuhao(0)==1) {									//算出随机数4
+					n4[c] = opn.number(nature,0);n444[c] = opn.number(fenmu,1);n44[c] = opn.number(n444[c],0);
 					N4 = gong(n44[c],n444[c]);
 					n44[c]/=N4;n444[c]/=N4;
-				}else	n4[c] = number(nature,0);		
+				}else	n4[c] = opn.number(nature,0);		
 				
 				/*
 				 * 
 				 * 第一类式子,例如 (2*4-6)*3
 				 * 
 				 */
-				if(fuhao(0)==1) {
-					Fuhao1[c] = fuhao(1);Fuhao2[c] = fuhao(1);Fuhao3[c] = fuhao(1);
+				if(fh.fuhao(0)==1) {
+					Fuhao1[c] = fh.fuhao(1);Fuhao2[c] = fh.fuhao(1);Fuhao3[c] = fh.fuhao(1);
 					/*
 					 * 得到形如  a+b  的式子（第一步运算）
 					 */
@@ -137,11 +113,11 @@ public class getQuestion {
 					/*
 					 * 得到形如  a+b+c  的式子（第二步运算）
 					 */
-					if(fuhao(0)==1) {	//随机生成1时执行此操作,往题目添加第三个数
+					if(fh.fuhao(0)==1) {	//随机生成1时执行此操作,往题目添加第三个数
 						T[c] = 3;
 						if((Fuhao2[c]=='-')&((answerZi/answerMu-(n3[c]+n33[c]/n333[c]))>0)) {
 							temp = 1;	//temp = 1时后面添加
-							if(fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao2[c]+" ");
+							if(fh.fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao2[c]+" ");
 							else s.append(" "+Fuhao2[c]+" ");
 							if((n33[c]==0))	s.append(n3[c]);
 							else if(n333[c]==1)	s.append(n3[c]+n33[c]);
@@ -149,15 +125,15 @@ public class getQuestion {
 						}else if((Fuhao2[c]=='-')&((answerZi/answerMu-(n3[c]+n33[c]/n333[c]))<0)) {
 							temp = 0;	//temp = 0时前面添加
 							if((Fuhao1[c]=='+')|(Fuhao1[c]=='-'))	s.insert(0, " "+Fuhao2[c]+" (").append(')');
-							else if(fuhao(0)==1)	s.insert(0, " "+Fuhao2[c]+" (").append(')');
+							else if(fh.fuhao(0)==1)	s.insert(0, " "+Fuhao2[c]+" (").append(')');
 							else s.insert(0, " "+Fuhao2[c]+" ");
 							if((n33[c]==0))	s.insert(0, n3[c]);
 							else if(n333[c]==1)	s.insert(0,n3[c]+n33[c]);
 							else	s.insert(0,n3[c]+"'"+n33[c]+"/"+n333[c]);
-						}else if(fuhao(0)==1) {	//前面添加第三个数和第二个符号 
+						}else if(fh.fuhao(0)==1) {	//前面添加第三个数和第二个符号 
 							temp = 0;	//temp = 0时前面添加
 							if((Fuhao1[c]=='+')|(Fuhao1[c]=='-')|(Fuhao2[c]=='×')|(Fuhao2[c]=='÷'))	s.insert(0, " "+Fuhao2[c]+" (").append(')');
-							else if(fuhao(0)==1)	s.insert(0, " "+Fuhao2[c]+" (").append(')');
+							else if(fh.fuhao(0)==1)	s.insert(0, " "+Fuhao2[c]+" (").append(')');
 							else s.insert(0, " "+Fuhao2[c]+" ");
 							if((n33[c]==0))	s.insert(0, n3[c]); 
 							else if(n333[c]==1)	s.insert(0,n3[c]+n33[c]);
@@ -165,7 +141,7 @@ public class getQuestion {
 						}else {				//后面添加第三个数和第二个符号
 							temp = 1;	//temp = 1时后面添加
 							if(((Fuhao1[c]=='+')|(Fuhao1[c]=='-'))&((Fuhao2[c]=='×')|(Fuhao2[c]=='÷')))	s.insert(0, "(").append(") "+Fuhao2[c]+" ");
-							else if(fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao2[c]+" ");
+							else if(fh.fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao2[c]+" ");
 							else s.append(" "+Fuhao2[c]+" ");
 							if((n33[c]==0))	s.append(n3[c]);
 							else if(n333[c]==1)	s.append(n3[c]+n33[c]);
@@ -187,11 +163,11 @@ public class getQuestion {
 						/*
 						 * 得到形如  a+b+c+d 的式子（第三步运算）
 						 */
-						if(fuhao(0)==1) {	//随机生成1时执行此操作,往题目添加第四个数
+						if(fh.fuhao(0)==1) {	//随机生成1时执行此操作,往题目添加第四个数
 							T[c] = 4;
 							if((Fuhao3[c]=='-')&((answerZi/answerMu-(n4[c]+n44[c]/n444[c]))>0)) {
 								temp = 1;	//temp = 1时后面添加
-								if(fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao3[c]+" ");
+								if(fh.fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao3[c]+" ");
 								else s.append(" "+Fuhao3[c]+" ");
 								if((n44[c]==0))	s.append(n4[c]);
 								else if(n444[c]==1)	s.append(n4[c]+n44[c]);
@@ -199,15 +175,15 @@ public class getQuestion {
 							}else if((Fuhao3[c]=='-')&((answerZi/answerMu-(n4[c]+n44[c]/n444[c]))<0)) {
 								temp = 0;	//temp = 0时前面添加
 								if((Fuhao2[c]=='+')|(Fuhao2[c]=='-'))	s.insert(0, " "+Fuhao3[c]+" (").append(')');
-								else if(fuhao(0)==1)	s.insert(0, " "+Fuhao3[c]+" (").append(')');
+								else if(fh.fuhao(0)==1)	s.insert(0, " "+Fuhao3[c]+" (").append(')');
 								else s.insert(0, " "+Fuhao3[c]+" ");
 								if((n44[c]==0))	s.insert(0, n4[c]);
 								else if(n444[c]==1)	s.insert(0,n4[c]+n44[c]);
 								else	s.insert(0,n4[c]+"'"+n44[c]+"/"+n444[c]);
-							}else if(fuhao(0)==1) {	//前面添加第三个数和第二个符号 
+							}else if(fh.fuhao(0)==1) {	//前面添加第三个数和第二个符号 
 								temp = 0;	//temp = 0时前面添加
 								if((Fuhao2[c]=='+')|(Fuhao2[c]=='-')|(Fuhao3[c]=='×')|(Fuhao3[c]=='÷'))	s.insert(0, " "+Fuhao3[c]+" (").append(')');
-								else if(fuhao(0)==1)	s.insert(0, " "+Fuhao3[c]+" (").append(')');
+								else if(fh.fuhao(0)==1)	s.insert(0, " "+Fuhao3[c]+" (").append(')');
 								else s.insert(0, " "+Fuhao3[c]+" ");
 								if((n44[c]==0))	s.insert(0, n4[c]); 
 								else if(n444[c]==1)	s.insert(0,n4[c]+n44[c]);
@@ -215,7 +191,7 @@ public class getQuestion {
 							}else {				//后面添加第三个数和第二个符号
 								temp = 1;	//temp = 1时后面添加
 								if(((Fuhao2[c]=='+')|(Fuhao2[c]=='-'))&((Fuhao3[c]=='×')|(Fuhao3[c]=='÷')))	s.insert(0, "(").append(") "+Fuhao3[c]+" ");
-								else if(fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao3[c]+" ");
+								else if(fh.fuhao(0)==1)	s.insert(0, "(").append(") "+Fuhao3[c]+" ");
 								else s.append(" "+Fuhao3[c]+" ");
 								if((n44[c]==0))	s.append(n4[c]);
 								else if(n444[c]==1)	s.append(n4[c]+n44[c]);
@@ -271,16 +247,16 @@ public class getQuestion {
 				 * 
 				 */
 				else {
-					if(fuhao(0)==1)	Fuhao1[c] = '+';else	Fuhao1[c] = '-';
-					if(fuhao(0)==1)	Fuhao2[c] = '×';else	Fuhao2[c] = '÷';
-					if(fuhao(0)==1)	Fuhao3[c] = '×';else	Fuhao3[c] = '÷';
+					if(fh.fuhao(0)==1)	Fuhao1[c] = '+';else	Fuhao1[c] = '-';
+					if(fh.fuhao(0)==1)	Fuhao2[c] = '×';else	Fuhao2[c] = '÷';
+					if(fh.fuhao(0)==1)	Fuhao3[c] = '×';else	Fuhao3[c] = '÷';
 					switch(Fuhao2[c]) {
 					case '×':answerZi = n1[c]*n111[c]*n2[c]*n222[c]+n1[c]*n111[c]*n22[c]+n11[c]*n2[c]*n222[c]+n11[c]*n22[c];answerMu = n111[c]*n222[c];break;
-					case '÷':if((n2[c]+n22[c]/n222[c])==1)	n222[c]*=number(nature,1);	answerZi = n1[c]*n111[c]*n222[c]+n11[c]*n222[c];answerMu = n2[c]*n111[c]*n222[c]+n22[c]*n111[c];break;
+					case '÷':if((n2[c]+n22[c]/n222[c])==1)	n222[c]*=opn.number(nature,1);	answerZi = n1[c]*n111[c]*n222[c]+n11[c]*n222[c];answerMu = n2[c]*n111[c]*n222[c]+n22[c]*n111[c];break;
 					}
 					switch(Fuhao3[c]) {
 					case '×':Zi = n3[c]*n333[c]*n4[c]*n444[c]+n3[c]*n333[c]*n44[c]+n33[c]*n4[c]*n444[c]+n33[c]*n44[c];Mu = n333[c]*n444[c];break;
-					case '÷':if((n4[c]+n44[c]/n444[c])==1)	n444[c]*=number(nature,1);	Zi = n3[c]*n333[c]*n444[c]+n33[c]*n444[c];Mu = n4[c]*n333[c]*n444[c]+n44[c]*n333[c];break;
+					case '÷':if((n4[c]+n44[c]/n444[c])==1)	n444[c]*=opn.number(nature,1);	Zi = n3[c]*n333[c]*n444[c]+n33[c]*n444[c];Mu = n4[c]*n333[c]*n444[c]+n44[c]*n333[c];break;
 					}
 					if(Fuhao1[c]=='+')	{answerZi = answerZi*Mu+answerMu*Zi;answerMu = answerMu*Mu;}
 					else	{answerZi = answerZi*Mu-answerMu*Zi;answerMu = answerMu*Mu;}
@@ -333,7 +309,7 @@ public class getQuestion {
 			}
 			try {
 				FileWriter fw = new FileWriter(fex);
-				for(c=0;c<Qnumber;c++)		fw.write(c+1+"."+str[c]+"\n");	//保存题目到txt
+				for(c=0;c<Qnumber;c++) fw.write(c+1+"."+str[c]+"\n");	//保存题目到txt
 					fw.close();
 			}catch(IOException e) {
 				e.printStackTrace();
