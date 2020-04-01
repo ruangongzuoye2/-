@@ -6,8 +6,10 @@ public class information {
 	 static int num_timu;//生成题目数
 	 static  int fenmu_max;//分母最大值
 	 static  int nature;//式子中自然数最大值
+	 
 	 static String problem;//题目文件
 	 static String answer;//答案文件
+	 static String reply;//
 	 static String file_s;//检验答案结果保存的文件
 	
 	public static int getNum_timu() {
@@ -46,6 +48,13 @@ public class information {
 	public static void setFile_s(String file_s) {
 		information.file_s = file_s;
 	}
+	public static String getReply() {
+		return reply;
+	}
+	public static void setReply(String reply) {
+		information.reply = reply;
+	}
+	
 	
 	
 }
