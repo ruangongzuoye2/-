@@ -10,21 +10,23 @@ import java.util.Scanner;
 import unity.information;
 
 public class getAnswer {
-	public boolean  getAnswer(information info){
+	public boolean  getAnswer(){
 		Scanner sc = new Scanner(System.in);
 		int i = 0,j = 0,k = 0;
-		int Qnumber;
+		int Qnumber = information.getNum_timu();
 		StringBuilder wrong = new StringBuilder();	//错题记录写入txt
 		StringBuilder correct = new StringBuilder();//对题记录写入txt
 		int W = 0,C = 0;						    //错题数，对题数								
-		File fex = new File("E:\\eclipse-workspace\\结对作业\\src\\结对作业"+File.separator+"Exercises.txt");
-		File fan = new File("E:\\eclipse-workspace\\结对作业\\src\\结对作业"+File.separator+"Answers.txt");
-		//File grade = new File("E:\\eclipse-workspace\\结对作业\\src\\结对作业"+File.separator+"Grade.txt");
+		File fex = new File(information.getProblem());
+		File fan = new File(information.getAnswer());
+		File grade = new File(information.getFile_s());
 		try {
 			if(!grade.exists())	
 				grade.createNewFile();
 		}catch(IOException e) {
 			e.printStackTrace();
+			sc.close();
+			return false;
 		}
 		
 		BufferedReader R1 = null,R2 = null;
@@ -48,6 +50,8 @@ public class getAnswer {
 			R2.close();
 		}catch(IOException e) {
 			e.printStackTrace();
+			sc.close();
+			return false;
 		}finally {
 			if(R1!=null&R2!=null) {
 				try {
@@ -55,6 +59,7 @@ public class getAnswer {
 					R2.close();
 				}catch (IOException ee){
 					ee.printStackTrace();
+					return false;
 				}
 			}
 		}
@@ -76,11 +81,9 @@ public class getAnswer {
 			writer.close();
 		}catch(IOException e) {
 			e.printStackTrace(); 
+			return false;
 }		
-
-		
-		
-		return true;
+	return true;
 	}
 
 }
