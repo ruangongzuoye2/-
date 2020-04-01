@@ -17,6 +17,7 @@ public class main {
 	{
 		//创建一个窗口，创建一个窗口
 		myFrame frame = new myFrame("四则运算");
+		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//设置窗口大小
