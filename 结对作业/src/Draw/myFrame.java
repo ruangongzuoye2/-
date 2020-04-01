@@ -4,6 +4,7 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.file.FileAlreadyExistsException;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
@@ -80,8 +81,7 @@ public class myFrame extends JFrame{
 
 			selectedFile = fileChooser.getSelectedFile().getAbsolutePath();// 获得选中的文件对象
 			textField6.setText(selectedFile);// 显示选中文件的名称
-			file_q = selectedFile;
-
+			
 			}
 
 			}
@@ -101,7 +101,7 @@ public class myFrame extends JFrame{
 
 			selectedFile = fileChooser.getSelectedFile().getAbsolutePath();// 获得选中的文件对象
 			textField5.setText(selectedFile);// 显示选中文件的名称
-			file_a = selectedFile;
+			
 			}
 
 			}
@@ -140,13 +140,13 @@ public class myFrame extends JFrame{
 		button5.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				String str = textField.getText();//题
-				String str2 = textField3.getText();//分
-				String str3 = textField4.getText();//自
-				String str4 = textField5.getText();//答案
-				String str6 = textField6.getText();//题目
+				file_q = textField6.getText();
+				file_a = textField5.getText();
+				String fenmu_max = textField3.getText();//自
+				String nature = textField4.getText();//答案
+				String num_timu = textField.getText();//题目
 				//判断是否输入了
-				if(str.equals("")||str2.equals("")||str3.equals("")||str4.equals(""))
+				if(file_a.equals("")||file_q.equals("")||nature.equals("")||fenmu_max.equals("")||num_timu.equals(""))
 				{
 					Object[] options = { "OK ", "CANCEL " }; 
 					JOptionPane.showOptionDialog(null, "您还没有输入 ", "提示", JOptionPane.DEFAULT_OPTION, 
@@ -155,6 +155,8 @@ public class myFrame extends JFrame{
 				else {
 				information.setAnswer(file_a); 
 				information.setProblem(file_q);
+				information.setFenmu_max(Integer.parseInt(fenmu_max));
+				information.setNature(Integer.parseInt(nature));
 				information.setNum_timu(Integer.parseInt(textField.getText()));
 				getQuestion gQ = new getQuestion();
 				if(gQ.getQuestion())
@@ -175,7 +177,7 @@ public class myFrame extends JFrame{
 
 			selectedFile = fileChooser.getSelectedFile().getAbsolutePath();// 获得选中的文件对象
 			textField7.setText(selectedFile);// 显示选中文件的名称
-			file_s = selectedFile;
+			file_s = textField7.getText();
 
 			}
 
